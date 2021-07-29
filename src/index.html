@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+
     <title>Forms</title>
 </head>
 <body>
@@ -24,11 +27,83 @@
             </nav>
         </div>
     </header>
-    <section>
+
+    <section class="addresses">
 
     </section>
+    
+    <section class="products" x-data>
+        <template x-for="product in $store.products.items">
+            <div x-data="{ selected: true }" class="my-5">
+                <label class="product-label flex items-center p-1">
+                    <input type="checkbox" x-model="selected" class="mr-4">
+                    <p x-text="product.name"></p>
+                </label>
+                <table x-show="selected" class="text-sm">
+                    <thead>
+                        <tr>
+                            <th>Gramaje</th>
+                            <th>Cantidad</th>
+                            <th class="text-gray-700">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="grammarge in product.grammarges">
+                            <tr>
+                                <td x-text="`${grammarge.grammarge} ${grammarge.unit}`"></td>
+                                <td class="px-3">
+                                    <input type="number" value="0" class="w-14" min="0">
+                                </td>
+                                <td class="text-center text-gray-600" x-text="`${CURRENCY_CHAR} ${grammarge.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+    </section>
 
-    <script defer src="https://unpkg.com/alpinejs@3.2.2/dist/cdn.min.js"></script>
-    <script defer src="js/index.js"></script>
+<script defer src="https://unpkg.com/alpinejs@3.2.2/dist/cdn.min.js"></script>
+<!-- <script defer src="js/index.js"></script> -->
+<script defer>
+    const CURRENCY_CHAR = "€"
+    const CURRENCY_NAME = "EUR"
+    const WEIGHT_UNIT = "gr"
+    const LIQUID_UNIT = "ml"
+
+    const HEMP_FLOWERS = [
+        {
+            name: "Brooklyn 66 CBD",
+            grammarges:[
+                { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+                { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+                { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT} ,
+                { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+            ]
+        },
+        {
+            name: "New Orleans Skunk",
+            grammarges:[
+                { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+                { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+                { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT} ,
+                { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+            ]
+        },
+        {
+            name: "Philadelphia Relax CBD",
+            grammarges:[
+                { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+                { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+                { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT} ,
+                { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+            ]
+        }
+    ]
+
+    document.addEventListener('alpine:init', function(){
+        Alpine.store('products', { items: HEMP_FLOWERS })
+    })
+</script>
 </body>
 </html>
