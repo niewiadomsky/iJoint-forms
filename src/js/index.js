@@ -111,3 +111,10 @@ const ALIMENTATION = [
         ]
     }
 ]
+
+class Product {
+    constructor(name, ...grammages){
+        this.name = name
+        this.grammages = grammages
+    }
+}
