@@ -187,7 +187,7 @@ const ACEITE_CBD = [
     }
 ]
 
-const ALIMENTATION = [
+const ALIMENTACION = [
     {
         name: "Caramelos de CBD",
         grammarges:[
@@ -248,18 +248,22 @@ const ALIMENTATION = [
 
 Window.categories = [
     {
+        id: 1,
         name: "Hemp Flower",
         products: HEMP_FLOWER,
     },
     {
+        id: 2,
         name: "Hemp Cosmetic",
         products: HEMP_COSMETIC,
     },
     {
+        id: 3,
         name: "Aceite CBD",
         products: ACEITE_CBD,
     },
     {
+        id: 4,
         name: "Alimentación",
         products: ALIMENTACION,
     },

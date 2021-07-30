@@ -8,22 +8,19 @@
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 
+		<link rel="stylesheet" href="css/virtual-select.min.css">
     <title>Forms</title>
 </head>
 <body>
     <header class="header-wrapper mb-5">
         <div class="header">
             <img src="assets/logo.jpg" alt="iJoint logo" class="logo">
-            <nav class="filters">
-                <select>
-                    <option value="">All</option>
-                    <option value="">Hemp Flower</option>
-                    <option value="">Hemp Cosmetic</option>
-                    <option value="">Aceite CBD</option>
-                    <option value="">Alimentación</option>
-                </select>
+            <nav class="filters flex">
+							<div class="w-40">
+                <div id="categoriesFilter"></div>
+							</div>
     
-                <input type="search" placeholder="Search">
+                <!-- <input type="search" class="mr-5" placeholder="Search"> -->
             </nav>
         </div>
     </header>
@@ -35,11 +32,11 @@
     <section class="products w-full flex justify-center" x-data>
 			<div class="w-full max-w-screen-md">
 				<template x-for="category in $store.categories.items">
-					<div class="bg-gray-100 rounded-md p-3 my-3">
-						<h3 class="text-lg border-b-2 border-gray-400" x-text="category.name"></h3>
-						<div class="products">
+					<div class="bg-gray-200 rounded-md p-3 my-3 shadow-lg" x-data="{collapsed: true}">
+						<h3 class="text-lg border-b-2 border-gray-400" @click="collapsed = !collapsed" x-text="category.name"></h3>
+						<div class="products" x-show="collapsed">
 							<template x-for="product in category.products">
-								<div x-data="{ selected: false, hasGrammarges: !!product.grammarges?.length }">
+								<div x-data="{ selected: false, hasGrammarges: !!product.grammarges?.length}">
 										<label class="product-label inline-flex items-center p-1 cursor-pointer">
 												<input type="checkbox" x-model="selected" class="mr-4">
 												<p x-text="product.name"></p>
@@ -82,8 +79,12 @@
 															<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${product.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
 														</tr>
 												</tbody>
-										</table>
+											</table>
 										</template>
+										
+										<!-- <div>
+											Item subtotal: <span x-text="suma"></span>
+										</div> -->
 								</div>
 							</template>
 						</div>
@@ -93,16 +94,37 @@
     </section>
 
 <script defer src="https://unpkg.com/alpinejs@3.2.2/dist/cdn.min.js"></script>
+<script src="js/virtual-select.min.js"></script>
 <script src="js/index.js"></script>
 <script>
 	const CURRENCY_CHAR = "€"
 	const CURRENCY_NAME = "EUR"
 
-	console.log(Window.categories)
-	
+	const options = Window.categories.map(category => ({label: category.name, value: category.id}))
+
+	VirtualSelect.init({
+		ele: '#categoriesFilter',
+		options,
+		multiple: true,
+		search: false,
+		selectAllText: 'All',
+		placeholder: 'Categories',
+		selectedValue: Window.categories.map(category => category.id),
+		disableSelectAll: true,
+		hideClearButton: true
+	})
+
 	document.addEventListener('alpine:init', function(){
 		Alpine.store('categories', { items: Window.categories })
-		console.log(Alpine)
+
+		document.querySelector('#categoriesFilter').addEventListener('change', function(){
+			console.log(this.value)
+			const filteredOptions = Window.categories.filter(category => this.value.indexOf(category.id.toString()) >= 0);
+			console.log( Window.categories)
+			console.log(filteredOptions)
+
+			Alpine.store('categories', { items: filteredOptions })
+		})
 	})
 </script>
 </body>
