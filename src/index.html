@@ -66,6 +66,24 @@
 													</tbody>
 											</table>
 										</template>
+										<template x-if="!hasGrammarges">
+											<table x-show="selected" class="text-sm mb-10">
+												<thead>
+														<tr>
+																<th class="text-gray-700">Cantidad</th>
+																<th class="text-gray-700">Price</th>
+														</tr>
+												</thead>
+												<tbody>
+														<tr>
+															<td class="px-3">
+																<input type="number" value="0" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
+															</td>
+															<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${product.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
+														</tr>
+												</tbody>
+										</table>
+										</template>
 								</div>
 							</template>
 						</div>
