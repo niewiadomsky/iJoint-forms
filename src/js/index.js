@@ -183,13 +183,11 @@ const ACEITE_CBD = [
     },
     {
         name: "Aceite CBD DOG",
-        grammarges:[
-            {price: 10.00}
-        ]
+        price: 10.00
     }
 ]
 
-const ALIMENTACION = [
+const ALIMENTATION = [
     {
         name: "Caramelos de CBD",
         grammarges:[
@@ -220,9 +218,7 @@ const ALIMENTACION = [
     },
     {
         name: "Chocolate",
-        grammarges:[
-            {price: 5.50}
-        ]
+        price: 5.50
     },
     {
         name: "Grinded Hemp",
@@ -232,21 +228,15 @@ const ALIMENTACION = [
     },
     {
         name: "Proteina Hemp",
-        grammarges:[
-            {price: 5.50}
-        ]
+        price: 5.50
     },
     {
         name: "Hemp Infusión Piramide",
-        grammarges:[
-            {price: 5.50}
-        ]
+        price: 5.50 
     },
     {
         name: "Cañamon Pelado",
-        grammarges:[
-            {price: 5.50}
-        ]
+        price: 5.50
     },
     {
         name: "Picadura",
