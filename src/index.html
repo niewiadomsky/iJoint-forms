@@ -36,13 +36,13 @@
 						<h3 class="text-lg border-b-2 border-gray-400" @click="collapsed = !collapsed" x-text="category.name"></h3>
 						<div class="products" x-show="collapsed">
 							<template x-for="product in category.products">
-								<div x-data="{ selected: false, hasGrammarges: !!product.grammarges?.length}">
+								<div x-data="{ hasGrammarges: !!product.grammarges?.length}">
 										<label class="product-label inline-flex items-center p-1 cursor-pointer">
-												<input type="checkbox" x-model="selected" class="mr-4">
+												<input type="checkbox" x-model="product.selected" class="mr-4">
 												<p x-text="product.name"></p>
 										</label>
 										<template x-if="hasGrammarges">
-											<table x-show="selected" class="text-sm mb-10">
+											<table x-show="product.selected" class="text-sm mb-10">
 													<thead>
 															<tr>
 																	<th class="text-gray-700">Gramaje</th>
@@ -55,16 +55,19 @@
 																	<tr>
 																			<td x-text="`${grammarge.grammarge} ${grammarge.unit}`"></td>
 																			<td class="px-3">
-																					<input type="number" value="0" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
+																					<input x-init="'count' in grammarge ? '' : grammarge.count = 0" type="number" v-model="grammarge.count" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
 																			</td>
 																			<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${grammarge.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
 																	</tr>
 															</template>
 													</tbody>
 											</table>
+											<div>
+												Item subtotal: <span x-text="`${CURRENCY_CHAR} ${product.grammarges.reduce((total, grammarge) => total += grammarge.price * grammarge.count, 0)} ${CURRENCY_NAME}`"></span>
+											</div>
 										</template>
 										<template x-if="!hasGrammarges">
-											<table x-show="selected" class="text-sm mb-10">
+											<table x-show="product.selected" class="text-sm mb-10">
 												<thead>
 														<tr>
 																<th class="text-gray-700">Cantidad</th>
@@ -74,17 +77,17 @@
 												<tbody>
 														<tr>
 															<td class="px-3">
-																<input type="number" value="0" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
+																<input type="number" x-model="product.count" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
 															</td>
 															<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${product.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
 														</tr>
 												</tbody>
 											</table>
+											<div>
+												Item subtotal: <span x-text="`${CURRENCY_CHAR} ${product.count * product.price} ${CURRENCY_NAME}`"></span>
+											</div>
 										</template>
 										
-										<!-- <div>
-											Item subtotal: <span x-text="suma"></span>
-										</div> -->
 								</div>
 							</template>
 						</div>
