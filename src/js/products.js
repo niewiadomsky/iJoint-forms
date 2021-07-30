@@ -10,102 +10,79 @@ const HEMP_FLOWER = [
             { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
             { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
         ],
-    },
-    {
-        name: "New Orleans Skunk",
-        grammarges: [
-            { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-            { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
-            { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Philadelphia Relax CBD",
-        grammarges: [
-            { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-            { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
-            { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "New York Ice CBD",
-        grammarges: [
-            { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-            { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
-            { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Orange Bud CBD",
-        grammarges: [
-            { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-            { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
-            { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Ijoint Kush CBD",
-        grammarges: [
-            { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-            { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
-            { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Karma Lemon CBD",
-        grammarges: [
-            { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-            { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
-            { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Purple",
-        grammarges: [
-            { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-            { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
-            { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Cbg dream",
-        grammarges: [
-            { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-            { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
-            { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Hemp Resin Hash",
-        grammarges: [
-            { grammarge: 1, price: 4.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 12.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Magic Charas",
-        grammarges: [
-            { grammarge: 1, price: 6.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 15.00, unit: WEIGHT_UNIT },
-        ],
-    },
-    {
-        name: "Choco Hash CBG",
-        grammarges: [
-            { grammarge: 1, price: 6.00, unit: WEIGHT_UNIT },
-            { grammarge: 3, price: 15.00, unit: WEIGHT_UNIT },
-        ],
-    }
+    name: "New Orleans Skunk",
+    grammarges: [
+        { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+        { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
+        { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+    ],
+    name: "Philadelphia Relax CBD",
+    grammarges: [
+        { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+        { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
+        { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+    ],
+    name: "New York Ice CBD",
+    grammarges: [
+        { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+        { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
+        { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+    ],
+    name: "Orange Bud CBD",
+    grammarges: [
+        { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+        { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
+        { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+    ],
+    name: "Ijoint Kush CBD",
+    grammarges: [
+        { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+        { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
+        { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+    ],
+    name: "Karma Lemon CBD",
+    grammarges: [
+        { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+        { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
+        { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+    ],
+    name: "Purple",
+    grammarges: [
+        { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+        { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
+        { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+    ],
+    name: "CBG dream",
+    grammarges: [
+        { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
+        { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT },
+        { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
+    ],
+    name: "Hemp Resin Hash",
+    grammarges: [
+        { grammarge: 1, price: 4.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 12.00, unit: WEIGHT_UNIT },
+    ],
+    name: "Magic Charas",
+    grammarges: [
+        { grammarge: 1, price: 6.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 15.00, unit: WEIGHT_UNIT },
+    ],
+    name: "Choco Hash CBG",
+    grammarges: [
+        { grammarge: 1, price: 6.00, unit: WEIGHT_UNIT },
+        { grammarge: 3, price: 15.00, unit: WEIGHT_UNIT },
+    ],
+}
 ]
-
 const HEMP_COSMETIC = [
     {
         name: "Cleansing fluid with CBD",
@@ -142,9 +119,8 @@ const HEMP_COSMETIC = [
     {
         name: "Body Milk with CBD",
         price: 10.50,
-    }
+    },
 ]
-
 const ACEITE_CBD = [
     {
         name: "Aceite 5% CBD",
@@ -257,10 +233,10 @@ const ALIMENTACION = [
 ]
 
 Window.categories = [
-    {
-        name: "Hemp Flower",
-        products: HEMP_FLOWER,
-    },
+    // {
+    //     name: "Hemp Flower",
+    //     products: HEMP_FLOWER,
+    // },
     {
         name: "Hemp Cosmetic",
         products: HEMP_COSMETIC,

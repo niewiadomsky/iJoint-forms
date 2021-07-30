@@ -11,7 +11,7 @@
     <title>Forms</title>
 </head>
 <body>
-    <header class="header-wrapper">
+    <header class="header-wrapper mb-5">
         <div class="header">
             <img src="assets/logo.jpg" alt="iJoint logo" class="logo">
             <nav class="filters">
@@ -31,79 +31,61 @@
     <section class="addresses">
 
     </section>
-    
-    <section class="products" x-data>
-        <template x-for="product in $store.products.items">
-            <div x-data="{ selected: true }" class="my-5">
-                <label class="product-label flex items-center p-1">
-                    <input type="checkbox" x-model="selected" class="mr-4">
-                    <p x-text="product.name"></p>
-                </label>
-                <table x-show="selected" class="text-sm">
-                    <thead>
-                        <tr>
-                            <th>Gramaje</th>
-                            <th>Cantidad</th>
-                            <th class="text-gray-700">Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template x-for="grammarge in product.grammarges">
-                            <tr>
-                                <td x-text="`${grammarge.grammarge} ${grammarge.unit}`"></td>
-                                <td class="px-3">
-                                    <input type="number" value="0" class="w-14" min="0">
-                                </td>
-                                <td class="text-center text-gray-600" x-text="`${CURRENCY_CHAR} ${grammarge.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
-        </template>
+
+    <section class="products w-full flex justify-center" x-data>
+			<div class="w-full max-w-screen-md">
+				<template x-for="category in $store.categories.items">
+					<div class="bg-gray-100 rounded-md p-3 my-3">
+						<h3 class="text-lg border-b-2 border-gray-400" x-text="category.name"></h3>
+						<div class="products">
+							<template x-for="product in category.products">
+								<div x-data="{ selected: false, hasGrammarges: !!product.grammarges?.length }">
+										<label class="product-label inline-flex items-center p-1 cursor-pointer">
+												<input type="checkbox" x-model="selected" class="mr-4">
+												<p x-text="product.name"></p>
+										</label>
+										<template x-if="hasGrammarges">
+											<table x-show="selected" class="text-sm mb-10">
+													<thead>
+															<tr>
+																	<th class="text-gray-700">Gramaje</th>
+																	<th class="text-gray-700">Cantidad</th>
+																	<th class="text-gray-700">Price</th>
+															</tr>
+													</thead>
+													<tbody>
+															<template x-for="grammarge in product.grammarges">
+																	<tr>
+																			<td x-text="`${grammarge.grammarge} ${grammarge.unit}`"></td>
+																			<td class="px-3">
+																					<input type="number" value="0" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
+																			</td>
+																			<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${grammarge.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
+																	</tr>
+															</template>
+													</tbody>
+											</table>
+										</template>
+								</div>
+							</template>
+						</div>
+					</div>
+				</template>
+			</div>
     </section>
 
 <script defer src="https://unpkg.com/alpinejs@3.2.2/dist/cdn.min.js"></script>
-<!-- <script defer src="js/index.js"></script> -->
-<script defer>
-    const CURRENCY_CHAR = "€"
-    const CURRENCY_NAME = "EUR"
-    const WEIGHT_UNIT = "gr"
-    const LIQUID_UNIT = "ml"
+<script src="js/index.js"></script>
+<script>
+	const CURRENCY_CHAR = "€"
+	const CURRENCY_NAME = "EUR"
 
-    const HEMP_FLOWERS = [
-        {
-            name: "Brooklyn 66 CBD",
-            grammarges:[
-                { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-                { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-                { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT} ,
-                { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-            ]
-        },
-        {
-            name: "New Orleans Skunk",
-            grammarges:[
-                { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-                { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-                { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT} ,
-                { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-            ]
-        },
-        {
-            name: "Philadelphia Relax CBD",
-            grammarges:[
-                { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
-                { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
-                { grammarge: 10, price: 22.00, unit: WEIGHT_UNIT} ,
-                { grammarge: 25, price: 40.00, unit: WEIGHT_UNIT },
-            ]
-        }
-    ]
-
-    document.addEventListener('alpine:init', function(){
-        Alpine.store('products', { items: HEMP_FLOWERS })
-    })
+	console.log(Window.categories)
+	
+	document.addEventListener('alpine:init', function(){
+		Alpine.store('categories', { items: Window.categories })
+		console.log(Alpine)
+	})
 </script>
 </body>
 </html>
