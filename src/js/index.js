@@ -48,7 +48,7 @@ const HEMP_FLOWER = [
         ],
     },
     {
-        name: "Ijoint Kush CBD",
+        name: "iJoint Kush CBD",
         grammarges: [
             { grammarge: 1.5, price: 4.00, unit: WEIGHT_UNIT },
             { grammarge: 3, price: 8.00, unit: WEIGHT_UNIT },
