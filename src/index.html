@@ -13,14 +13,29 @@
 </head>
 <body class="pt-36">
     <header class="header-wrapper fixed w-full top-0 left-0 bg-white z-100">
-        <div class="header" x-data="{updateItems: (value) => $store.categories.items = $store.categories.items.map(category => ({name: category.name, items: category.products.filter(product => product.name.toLowerCase().search(value) >= 0)}))}">
+        <div class="header flex-wrap" x-data="{focusedSearch: false, updateItems: (value) =>{ $store.categories.items.forEach(category => category.products.forEach(product => product.hidden = !product.name.toLowerCase().includes(value.toLowerCase()))); console.log($store.categories.items, value)}}">
             <img src="assets/logo.jpg" alt="iJoint logo" class="logo">
+						<div class="cart"  @add-to-cart.window="$store.cart.currentValue = calculateFullPrice($store.categories.items)">
+							<table class="text-gray-600 text-sm">
+								<tr>
+									<td class="pr-10">Subtotal</td><td x-text="`${CURRENCY_CHAR} ${$store.cart.currentValue.toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>								
+								<tr>
+									<td>IVA</td><td x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * VAT_PERCENT).toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>
+								<tr class="border-t-2 border-gray-400 py-1">
+									<td>Total</td><td x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * (1 + VAT_PERCENT)).toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>
+							</table>
+						</div>
             <nav class="filters flex">
 							<div class="w-40">
                 <div id="categoriesFilter"></div>
 							</div>
-    
-							<input type="search" @keydown="updateItems($event.target.value)" class="mr-5" id="searchProducts" placeholder="Search">
+							<label class="search-label flex align-center w-auto ml-2" :class="focusedSearch ? 'shadow-md' : ''">
+								<i class="fas fa-search flex align-center p-2"></i>
+								<input type="text" @input.debounce.250ms="updateItems($event.target.value)" @focus="focusedSearch = true" @blur="focusedSearch = false" class="focus:outline-none " id="searchProducts" placeholder="Search">
+							</label>
             </nav>
         </div>
     </header>
@@ -29,75 +44,77 @@
 
     </section>
 
-    <section class="products w-full flex justify-center" x-data>
-			<div class="w-full max-w-screen-md">
+    <section class="products w-full flex justify-center px-4" x-data>
+			<div class="w-full max-w-screen-md px-5 mx-auto mb-3">
 				<template x-for="category in $store.categories.items" :key="category.id">
 					<div class="bg-gray-200 rounded-md p-3 my-3 shadow-lg" x-data="{collapsed: true}">
 						<div class="flex items-center justify-between text-lg cursor-pointer" :class="collapsed ? 'border-b-2 border-gray-400' : ''" @click="collapsed = !collapsed">
 							<h3 x-text="category.name"></h3>
-							<div class="relative z-10 text-gray-700">
-								<i class="fas fa-angle-down transition" :class="collapsed ? 'transform rotate-180' : ''"></i>
+							<div class="text-gray-700">
+								<i class="fas" :class="collapsed ? 'fa-angle-up' : 'fa-angle-down'"></i>
 							</div>
 						</div>
 						<div class="products p-2" x-show="collapsed">
 							<template x-for="product in category.products" :key="product.name">
-								<div x-data="{ hasGrammarges: !!product.grammarges?.length}">
-										<label class="product-label inline-flex items-center p-1 cursor-pointer">
-												<input type="checkbox" x-model="product.selected" class="mr-4">
-												<p x-text="product.name"></p>
-										</label>
-										<template x-if="hasGrammarges">
-											<div x-show="product.selected" class="text-sm mb-10"  x-data="{calculatePrice: () => product.grammarges.reduce((total, grammarge) => total += grammarge.price * grammarge.count, 0), total: 0}" x-init="total = calculatePrice()">
-												<table>
+								<template x-if="!product.hidden">
+									<div x-data="{ hasGrammarges: !!product.grammarges?.length}">
+											<label class="product-label inline-flex items-center p-1 cursor-pointer">
+													<input type="checkbox" x-model="product.selected" class="mr-4">
+													<p x-text="product.name"></p>
+											</label>
+											<template x-if="hasGrammarges">
+												<div x-show="product.selected" class="text-sm mb-10"  x-data="{calculatePrice: () => product.grammarges.reduce((total, grammarge) => total += grammarge.price * grammarge.count, 0), total: 0}" x-init="total = calculatePrice()">
+													<table>
+															<thead>
+																	<tr>
+																			<th class="text-gray-700">Gramaje</th>
+																			<th class="text-gray-700">Cantidad</th>
+																			<th class="text-gray-700">Price</th>
+																	</tr>
+															</thead>
+															<tbody>
+																	<template x-for="grammarge in product.grammarges" :key="grammarge.grammarge">
+																			<tr x-init="$watch('grammarge.count', value => {total = calculatePrice()})">
+																					<td x-text="`${grammarge.grammarge} ${grammarge.unit}`"></td>
+																					<td class="px-3">
+																							<input type="number" x-model="grammarge.count" @input="$dispatch('add-to-cart')" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
+																					</td>
+																					<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${grammarge.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
+																			</tr>
+																	</template>
+															</tbody>
+													</table>
+													<div class="text-gray-800 mt-3">
+														Item subtotal: <span x-text="`${CURRENCY_CHAR} ${total.toFixed(2)} ${CURRENCY_NAME}`"></span>
+													</div>
+												</div>
+											</template>
+											<template x-if="!hasGrammarges">
+												<div x-show="product.selected" class="text-sm mb-10">
+													<table>
 														<thead>
 																<tr>
-																		<th class="text-gray-700">Gramaje</th>
 																		<th class="text-gray-700">Cantidad</th>
 																		<th class="text-gray-700">Price</th>
 																</tr>
 														</thead>
 														<tbody>
-																<template x-for="grammarge in product.grammarges" :key="grammarge.grammarge">
-																		<tr x-init="$watch('grammarge.count', value => {total = calculatePrice()})">
-																				<td x-text="`${grammarge.grammarge} ${grammarge.unit}`"></td>
-																				<td class="px-3">
-																						<input type="number" x-model="grammarge.count" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
-																				</td>
-																				<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${grammarge.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
-																		</tr>
-																</template>
+																<tr>
+																	<td class="px-3">
+																		<input type="number" x-model="product.count" @input="$dispatch('add-to-cart')" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
+																	</td>
+																	<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${product.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
+																</tr>
 														</tbody>
-												</table>
-												<div class="text-gray-800 mt-3">
-													Item subtotal: <span x-text="`${CURRENCY_CHAR} ${total.toFixed(2)} ${CURRENCY_NAME}`"></span>
+													</table>
+													<div class="text-gray-800 mt-3">
+														Item subtotal: <span x-text="`${CURRENCY_CHAR} ${(product.count * product.price).toFixed(2)} ${CURRENCY_NAME}`"></span>
+													</div>
 												</div>
-											</div>
-										</template>
-										<template x-if="!hasGrammarges">
-											<div x-show="product.selected" class="text-sm mb-10">
-												<table>
-													<thead>
-															<tr>
-																	<th class="text-gray-700">Cantidad</th>
-																	<th class="text-gray-700">Price</th>
-															</tr>
-													</thead>
-													<tbody>
-															<tr>
-																<td class="px-3">
-																	<input type="number" x-model="product.count" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
-																</td>
-																<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${product.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
-															</tr>
-													</tbody>
-												</table>
-												<div class="text-gray-800 mt-3">
-													Item subtotal: <span x-text="`${CURRENCY_CHAR} ${(product.count * product.price).toFixed(2)} ${CURRENCY_NAME}`"></span>
-												</div>
-											</div>
-										</template>
-										
-								</div>
+											</template>
+											
+									</div>
+								</template>
 							</template>
 						</div>
 					</div>
@@ -111,6 +128,7 @@
 <script>
 	const CURRENCY_CHAR = "€"
 	const CURRENCY_NAME = "EUR"
+	const VAT_PERCENT = 0.21
 
 	const options = Window.categories.map(category => ({label: category.name, value: category.id}))
 
@@ -127,11 +145,8 @@
 	})
 
 	document.addEventListener('alpine:init', function(){
-		Alpine.store('categories', { items: Window.categories })
-		
-
-		Window.categories.map(category => 
-			category.products.map(product => {
+		Window.categories.forEach(category => 
+			category.products.forEach(product => {
 				if(!('grammarges' in product)) {
 					product.count = 0
 					return
@@ -140,6 +155,11 @@
 			})
 		)
 
+		Alpine.store('categories', { items: Window.categories })
+		Alpine.store('cart', { currentValue: 0 })
+		
+
+
 		document.querySelector('#categoriesFilter').addEventListener('change', function(){
 
 			const filteredOptions = Window.categories.filter(category => this.value.indexOf(category.id.toString()) >= 0)
@@ -147,13 +167,21 @@
 			Alpine.store('categories', { items: filteredOptions })
 		})
 
-		// document.querySelector('#searchProducts').addEventListener('input', function({target: {value}}){
-		// 	const filteredOptions = Window.categories.map(category => category.products.filter(product => product.name.toLowerCase().search(value) >= 0))
-
-		// 	Alpine.store('categories', { items: filteredOptions })
-		// })
-
 	})
+
+	function calculateFullPrice(categories){
+		return categories.reduce(
+			(total, category) => total += category.products.reduce(
+				function(totalProduct, product){
+					if('grammarges' in product){
+						totalProduct += product.grammarges.reduce((totalGrammarge, grammarge) => totalGrammarge += grammarge.price * grammarge.count, 0)
+					} else {
+						totalProduct += product.price * product.count
+					}
+					return totalProduct
+				}, 0), 0
+		)
+	}
 </script>
 </body>
 </html>

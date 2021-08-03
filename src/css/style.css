@@ -34,3 +34,7 @@ body {
 .logo {
     height: 50px;
 }
+
+.search-label {
+    border: 1px solid #ddd;
+}
