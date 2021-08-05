@@ -40,8 +40,45 @@
         </div>
     </header>
 
-    <section class="addresses">
-
+    <section class="addresses w-full flex justify-center">
+			<div class="w-full max-w-screen-md">
+				<div class="flex bg-gray-200 rounded-md p-3 my-3 shadow-lg">
+					<div class="mr-3">
+						<div class="text-lg border-b-2 border-gray-400">
+							<h3>Nueva dirección de entrega</h3>
+						</div>
+						<form class="delivery_address flex flex-wrap justify-between">
+							<p class="w-1/3 mt-2">Empresa</p><input type="text" name="company" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">Nombre</p><input type="text" name="name" class="mt-2 border-2 border-gray-400"> 
+							<p class="w-1/3 mt-2">Apellidos</p><input type="text" name="surname" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">Calle</p><input type="text" name="street" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">Código postal</p><input type="text" name="postcode" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">Ciudad</p><input type="text" name="city" class="mt-2 border-2 border-gray-400">  
+							<p class="w-1/3 mt-2">País / Región</p><input type="text" name="country" class="mt-2 border-2 border-gray-400"> 
+							<p class="w-1/3 mt-2">Provincia</p><input type="text" name="provincia" class="mt-2 border-2 border-gray-400"> 
+							<p class="w-1/3 mt-2">Teléfono</p><input type="text" name="phone" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">e-mail</p><input type="text" name="email" class="mt-2 border-2 border-gray-400"> 
+						</form>
+					</div>
+					<div>
+						<div class="text-lg border-b-2 border-gray-400">
+							<h3>Billing address</h3>
+						</div>
+						<form class="billing_address flex flex-wrap justify-between">
+							<p class="w-1/3 mt-2">Empresa</p><input type="text" name="company" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">Nombre</p><input type="text" name="name" class="mt-2 border-2 border-gray-400"> 
+							<p class="w-1/3 mt-2">Apellidos</p><input type="text" name="surname" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">Calle</p><input type="text" name="street" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">Código postal</p><input type="text" name="postcode" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">Ciudad</p><input type="text" name="city" class="mt-2 border-2 border-gray-400">  
+							<p class="w-1/3 mt-2">País / Región</p><input type="text" name="country" class="mt-2 border-2 border-gray-400"> 
+							<p class="w-1/3 mt-2">Provincia</p><input type="text" name="provincia" class="mt-2 border-2 border-gray-400"> 
+							<p class="w-1/3 mt-2">Teléfono</p><input type="text" name="phone" class="mt-2 border-2 border-gray-400">
+							<p class="w-1/3 mt-2">e-mail</p><input type="text" name="email" class="mt-2 border-2 border-gray-400"> 
+						</form>
+					</div>	
+				</div>			
+			</div>
     </section>
 
     <section class="products w-full flex justify-center px-4" x-data>
