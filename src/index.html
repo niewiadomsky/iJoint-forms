@@ -12,63 +12,37 @@
 		<link rel="stylesheet" href="css/virtual-select.min.css">
 		<title>Forms</title>
 </head>
-<body class="pt-36 bg-gray-200">
+<body class="pt-36 bg-gray-200" x-init="$watch('$store.cart.watch', () => document.querySelector('body').toggleClass('overflow-hidden'))">
     <header class="header-wrapper fixed w-full top-0 left-0 bg-white z-100">
         <div class="header flex-wrap" x-data="{focusedSearch: false, updateItems: (value) =>{ $store.categories.items.forEach(category => category.products.forEach(product => product.hidden = !product.name.toLowerCase().includes(value.toLowerCase())))}}">
             <img src="assets/logo.jpg" alt="iJoint logo" class="logo">
-						<div class="cart"  @add-to-cart.window="$store.cart.currentValue = calculateFullPrice($store.categories.items)">
-							<table class="text-gray-600 text-sm">
-								<tr>
-									<td class="pr-10">Subtotal</td><td x-text="`${CURRENCY_CHAR} ${$store.cart.currentValue.toFixed(2)} ${CURRENCY_NAME}`"></td>
-								</tr>								
-								<tr>
-									<td>IVA</td><td x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * VAT_PERCENT).toFixed(2)} ${CURRENCY_NAME}`"></td>
-								</tr>
-								<tr class="border-t-2 border-gray-400 py-1">
-									<td>Total</td><td x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * (1 + VAT_PERCENT)).toFixed(2)} ${CURRENCY_NAME}`"></td>
-								</tr>
-							</table>
-							<button role="button" class="mr-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" @click="orderedProducts($store.categories.items); $store.cart.opened = true; console.log($store.cart.opened)">Order</button>
-						</div>
-            <nav class="filters flex">
+            <nav class="filters flex mt-5 md:mt-0">
 							<div class="w-40">
                 <div id="categoriesFilter"></div>
 							</div>
 							<label class="search-label flex align-center w-auto ml-2" :class="focusedSearch ? 'shadow-md' : ''">
 								<i class="fas fa-search flex align-center p-2"></i>
-								<input type="text" @input.debounce.250ms="updateItems($event.target.value)" @focus="focusedSearch = true" @blur="focusedSearch = false" class="focus:outline-none " id="searchProducts" placeholder="Search">
+								<input type="text" @input.debounce.250ms="updateItems($event.target.value)" @focus="focusedSearch = true" @blur="focusedSearch = false" class="focus:outline-none " id="searchProducts" placeholder="Buscar">
 							</label>
             </nav>
+						<div class="cart w-full lg:w-96 mt-5 lg:mt-0"  @add-to-cart.window="$store.cart.currentValue = calculateFullPrice($store.categories.items); $store.cart.items = orderedProducts($store.categories.items)">
+							<table class="text-gray-600 text-sm w-full">
+								<tr>
+									<td class="pr-10">Subtotal</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${$store.cart.currentValue.toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>								
+								<tr>
+									<td>IVA</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * VAT_PERCENT).toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>
+								<tr class="border-t border-gray-300 py-1">
+									<td>Total</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * (1 + VAT_PERCENT)).toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>
+							</table>
+							<div class="flex justify-end">
+								<button role="button" :disabled="$store.cart.items.length == 0" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" :class="$store.cart.items.length ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'" @click="orderedProducts($store.categories.items); $store.cart.opened = true; MicroModal.show('modalCart');">Próximo</button>
+							</div>
+						</div>
         </div>
     </header>
-
-    <!-- <section class="addresses w-full flex justify-center">
-			<div class="w-full max-w-screen-md mx-auto mb-3 shadow-lg bg-white rounded-md" x-data="{addresses: [{header: 'Billing Address'}, {header: 'Delivery Address'}]}">
-				<h3 class="py-3 text-lg border-b-2 border-gray-400 flex items-center mb-3">Detalles de contacto</h3>
-			
-				<form class="flex flex-col">
-					<label>Empresa<input type="text" name="company" class="mt-2 border-2 border-gray-400"></label>
-					<label>Nombre<input type="text" name="name" class="mt-2 border-2 border-gray-400"></label>
-					<label>Apellidos<input type="text" name="surname" class="mt-2 border-2 border-gray-400"></label>
-					
-					<template x-for="address in addresses" :key="address">
-						<div>
-								<fieldset class="border border-solid border-gray-300 p-3 flex flex-col">
-									<legend class="text-sm" x-text="address.header"></legend>
-									<label>Calle<input type="text" name="street" class="mt-2 border-2 border-gray-400"></label>
-									<label>Código postal<input type="text" name="postcode" class="mt-2 border-2 border-gray-400"></label>
-									<label>Ciudad<input type="text" name="city" class="mt-2 border-2 border-gray-400"></label>
-									<label>País / Región<input type="text" name="country" class="mt-2 border-2 border-gray-400"></label>
-									<label>Provincia<input type="text" name="provincia" class="mt-2 border-2 border-gray-400"></label>
-								</fieldset>
-							</div>
-						</template>
-
-						<label>Teléfono<input type="text" name="phone" class="mt-2 border-2 border-gray-400"></label>
-						<label>E-mail<input type="text" name="email" class="mt-2 border-2 border-gray-400"></label>
-				</form>
-			</div>			
-    </section> -->
 
 		<section class="addresses w-full flex justify-center px-4 mt-3" x-data="{addresses: [{header: 'Billing Address', prefix: 'billing'}, {header: 'Delivery Address', prefix: 'delivery'}]}">
 			<div class="w-full max-w-screen-md px-5 mx-auto mb-3">
@@ -98,38 +72,40 @@
 										<input type="tel" name="telephone" id="telephone" required autocomplete="tel" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
 									</div>
 
-									<template x-for="address in addresses" :key="address.prefix">
-										<fieldset class="col-span-6 grid grid-cols-6 gap-6">
-											<legend class="col-span-6 -mb-5 text-gray-900" x-text="address.header"></legend>
-											<!-- <div class="col-span-6 sm:col-span-3">
-												<label :for="`${address.prefix}_country`" class="block text-sm font-medium text-gray-700">Country / Region</label>
-												<select :id="`${address.prefix}_country`" :name="`${address.prefix}_country`" required autocomplete="country" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-													<option>United States</option>
-													<option>Canada</option>
-													<option>Mexico</option>
-												</select>
-											</div> -->
-				
-											<div class="col-span-6">
-												<label :for="`${address.prefix}_street_address`" class="block text-sm font-medium text-gray-700">Street address</label>
-												<input type="text" :id="`${address.prefix}_street_address`" :name="`${address.prefix}_street_address`" required autocomplete="street-address" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-											</div>
-				
-											<div class="col-span-6 sm:col-span-3 lg:col-span-2">
-												<label :for="`${address.prefix}_city`" class="block text-sm font-medium text-gray-700">City</label>
-												<input type="text" :id="`${address.prefix}_city`" :name="`${address.prefix}_city`" required class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-											</div>
-				
-											<div class="col-span-6 sm:col-span-3 lg:col-span-2">
-												<label :for="`${address.prefix}_state`" class="block text-sm font-medium text-gray-700">State / Province</label>
-												<input type="text" :id="`${address.prefix}_state`" :name="`${address.prefix}_state`" required class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-											</div>
-				
-											<div class="col-span-6 sm:col-span-3 lg:col-span-2">
-												<label :for="`${address.prefix}_postal_code`" class="block text-sm font-medium text-gray-700">ZIP / Postal</label>
-												<input type="text" :id="`${address.prefix}_postal_code`" :name="`${address.prefix}_postal_code`" required autocomplete="postal-code" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-lg sm:text-sm border-b border-gray-300">
-											</div>
-										</fieldset>
+									<template x-for="address in addresses">
+										<div class="col-span-6">
+											<fieldset class="grid grid-cols-6 gap-6">
+												<legend class="col-span-6 -mb-5 text-gray-900" x-text="address.header"></legend>
+												<!-- <div class="col-span-6 sm:col-span-3">
+													<label :for="`${address.prefix}_country`" class="block text-sm font-medium text-gray-700">Country / Region</label>
+													<select :id="`${address.prefix}_country`" :name="`${address.prefix}_country`" required autocomplete="country" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+														<option>United States</option>
+														<option>Canada</option>
+														<option>Mexico</option>
+													</select>
+												</div> -->
+					
+												<div class="col-span-6">
+													<label :for="`${address.prefix}_street_address`" class="block text-sm font-medium text-gray-700">Street address</label>
+													<input type="text" :id="`${address.prefix}_street_address`" :name="`${address.prefix}_street_address`" required autocomplete="street-address" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+												</div>
+					
+												<div class="col-span-6 sm:col-span-3 lg:col-span-2">
+													<label :for="`${address.prefix}_city`" class="block text-sm font-medium text-gray-700">City</label>
+													<input type="text" :id="`${address.prefix}_city`" :name="`${address.prefix}_city`" required class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+												</div>
+					
+												<div class="col-span-6 sm:col-span-3 lg:col-span-2">
+													<label :for="`${address.prefix}_state`" class="block text-sm font-medium text-gray-700">State / Province</label>
+													<input type="text" :id="`${address.prefix}_state`" :name="`${address.prefix}_state`" required class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+												</div>
+					
+												<div class="col-span-6 sm:col-span-3 lg:col-span-2">
+													<label :for="`${address.prefix}_postal_code`" class="block text-sm font-medium text-gray-700">ZIP / Postal</label>
+													<input type="text" :id="`${address.prefix}_postal_code`" :name="`${address.prefix}_postal_code`" required autocomplete="postal-code" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+												</div>
+											</fieldset>
+										</div>
 									</template>
 								</div>
 							</div>
@@ -167,11 +143,11 @@
 								<template x-if="!product.hidden">
 									<div x-data="{ hasGrammarges: !!product.grammarges?.length}">
 											<label class="product-label inline-flex items-center p-1 cursor-pointer">
-													<input type="checkbox" x-model="product.selected" @change="$dispatch('select-product')" class="mr-4">
+													<input type="checkbox" x-model="product.selected" @change="$dispatch('select-product'); $dispatch('add-to-cart')" class="mr-4">
 													<p x-text="product.name"></p>
 											</label>
 											<template x-if="hasGrammarges">
-												<div x-show="product.selected" class="text-sm mb-10"  x-data="{calculatePrice: () => product.grammarges.reduce((total, grammarge) => total += grammarge.price * grammarge.count, 0), total: 0}" x-init="total = calculatePrice()">
+												<div x-show="product.selected" class="text-sm mb-10"  x-data="{calculatePrice: () => product.selected ? product.grammarges.reduce((total, grammarge) => total += grammarge.price * grammarge.count, 0) : 0, total: 0}" x-init="total = calculatePrice()">
 													<table>
 															<thead>
 																	<tr>
@@ -228,23 +204,81 @@
 				</template>
 			</div>
     </section>
+
 		<div x-data>
 			<template x-if="$store.cart.opened">
-				<div class="cart-modal__wrapper fixed top-0 left-0 bg-gray-800 bg-opacity-75 w-screen h-screen flex justify-center items-center" @click.self="$store.cart.opened = false">
-					<div class="cart-modal p-4 bg-gray-100 rounded-md shadow-lg">
-						<div class="cart-modal__header">Potwierdź zamówienie</div>
+				<div class="cart-modal__wrapper absolute top-0 left-0 bg-gray-800 bg-opacity-75 w-screen h-screen flex justify-center items-center overflow-y-auto" @click.self="$store.cart.opened = false">
+					<div class="cart-modal p-4 bg-gray-100 rounded-md shadow-lg mx-8 mt-8 max-w-2xl">
+						<div class="cart-modal__header pb-3 text-gray-800 text-lg">Resumen</div>
 						<div class="cart-modal__body">
-
+							<table class="text-sm text-gray-700 w-full">
+								<thead>
+									<tr>
+										<th class="text-left px-3">Producto</th><th class="text-left px-3">Cantidad</th><th class="text-left px-3">Total price</th>
+									</tr>
+								</thead>
+								<template x-for="product in $store.cart.items">
+									<tbody>
+										<template x-if="'grammarges' in product">
+											<template x-for="grammarge in product.grammarges">
+												<tr>
+													<td class="px-3 py-2"><span x-text="`${product.name} ${grammarge.grammarge}${grammarge.unit}`"></span></td>
+													<td class="px-3 py-2"><span x-text="`${grammarge.count}`"></td>
+													<td class="px-3 py-2"><span x-text="`${CURRENCY_CHAR} ${(grammarge.count * grammarge.price).toFixed(2)} ${CURRENCY_NAME}`"></td>
+												</tr>													
+											</template>
+										</template>
+										<template x-if="!('grammarges' in product)">
+											<tr>
+												<td class="px-3 py-2"><span x-text="product.name"></span></td>
+												<td class="px-3 py-2"><span x-text="`${product.count}`"></span></td>
+												<td class="px-3 py-2"><span x-text="`${CURRENCY_CHAR} ${(product.count * product.price).toFixed(2)} ${CURRENCY_NAME}`"></td>
+											</tr>
+										</template>
+									</tbody>
+								</template>
+								<tfoot>
+									<tr>
+										<td class="px-3 pt-6 font-bold" colspan="2">Subtotal</td>
+										<td class="px-3 pt-6" x-text="`${CURRENCY_CHAR} ${$store.cart.currentValue.toFixed(2)} ${CURRENCY_NAME}`"></td>
+									</tr>
+									<tr>
+										<td class="px-3 font-bold" colspan="2">IVA</td>
+										<td class="px-3 " x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * VAT_PERCENT).toFixed(2)} ${CURRENCY_NAME}`"></td>
+									</tr>
+									<tr class="border-t border-gray-300">
+										<td class="px-3 pt-2 font-bold" colspan="2">Total</td>
+										<td class="px-3 pt-2" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * (1 + VAT_PERCENT)).toFixed(2)} ${CURRENCY_NAME}`"></td>
+									</tr>
+								</tfoot>
+							</table>
+							<label class="block px-3 py-3">
+								<p class="text-gray-800 text-sm font-bold">Si desea comentarnos:</p>
+								<textarea class="resize-y w-full bg-300 focus:outline-none rounded-md shadow-md p-1" style="min-height: 50px"></textarea>
+							</label>
 						</div>
-						<div class="cart-modal__footer border-t border-gray-300 pt-3">
-							<button role="button" @click="$store.cart.opened = false" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Anuluj</button>
-							<button role="button" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Zamów</button>
+						<div class="cart-modal__footer pt-3">
+							<div class="p-2 flex justify-end">
+								<button role="button" @click="$store.cart.opened = false" class=" mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Cancelar</button>
+								<button role="button" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Enviar</button>
+							</div>
+							<div class="my-5">
+								<h2 class="text-xl text-gray-900">Nota</h2>
+								<p class="text-sm text-gray-700">
+									En cuanto recibamos la orden de pedido, le enviaremos factura proforma para su pago mediante transferencia bancaria a: Grupo Ijoint 2018 SL y le indicaremos fecha prevista de entrega de los articulos seleccionados.
+								</p>
+							</div>
+							<div>
+								<p class="text-xs text-gray-500">PROTECCIÓN DE DATOS De conformidad con lo establecido en el Art. 5 de la Ley Orgánica 15/1999 de diciembre de Protección de Datos de Carácter Personal, por el que se regula el derecho de información en la recogida de datos le informamos de los siguientes extremos: - Los datos de carácter personal que nos ha suministrado en esta y otras comunicaciones mantenidas con usted serán objeto de tratamiento en los ficheros responsabilidad de GRUPO IJOINT 2018 SL - La finalidad del tratamiento es la de gestionar de forma adecuada la prestación del servicio que nos ha requerido. Asimismo estos datos no serán cedidos a terceros, salvo las cesiones legalmente permitidas. - Los datos solicitados a través de esta y otras comunicaciones son de suministro obligatorio para la prestación del servicio. Estos son adecuados, pertinentes y no excesivos. - Su negativa a suministrar los datos solicitados implica la imposibilidad prestarle el servicio. - Asimismo, le informamos de la posibilidad de ejercitar los correspondiente derechos de acceso, rectificación, cancelación y oposición de conformidad con lo establecido en la Ley 15/1999 ante GRUPO IJOINT2018 SL como responsables del fichero. Los derechos mencionados los puede ejercitar a través de los siguientes medios:
+									marketing@ijointcbd.com. GRUPO IJOINT 2018 SL , CIF: B93607174 C/ OLLERIAS 18-29012 MALAGA</p>
+							</div>
 						</div>
 					</div>
 				</div>
 			</template>
 		</div>
 
+		
 <script defer src="https://unpkg.com/alpinejs@3.2.2/dist/cdn.min.js"></script>
 <script src="js/virtual-select.min.js"></script>
 <script src="js/cookies.min.js"></script>
@@ -299,6 +333,8 @@
 		return categories.reduce(
 			(total, category) => total += category.products.reduce(
 				function(totalProduct, product){
+					if(product.selected == false) return totalProduct
+
 					if('grammarges' in product){
 						totalProduct += product.grammarges.reduce((totalGrammarge, grammarge) => totalGrammarge += grammarge.price * grammarge.count, 0)
 					} else {
@@ -340,6 +376,8 @@
 	}
 
 	function filterOrderedProducts(product){
+		if(product.selected == false) return false
+
 		if('grammarges' in product)
 			product.grammarges = product.grammarges.filter(grammar => grammar.count > 0)
 		

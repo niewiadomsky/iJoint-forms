@@ -38,3 +38,11 @@ body {
 .search-label {
     border: 1px solid #ddd;
 }
+
+.modal {
+    display: none;
+}
+
+.modal.is-open {
+    display: block;
+}
