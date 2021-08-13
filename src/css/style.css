@@ -46,3 +46,7 @@ body {
 .modal.is-open {
     display: block;
 }
+
+[x-cloak] {
+    display: none;
+}

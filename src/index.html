@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,274 +12,289 @@
 		<link rel="stylesheet" href="css/virtual-select.min.css">
 		<title>Forms</title>
 </head>
-<body class="pt-36 bg-gray-200" x-init="$watch('$store.cart.watch', () => document.querySelector('body').toggleClass('overflow-hidden'))">
-    <header class="header-wrapper fixed w-full top-0 left-0 bg-white z-100">
-        <div class="header flex-wrap" x-data="{focusedSearch: false, updateItems: (value) =>{ $store.categories.items.forEach(category => category.products.forEach(product => product.hidden = !product.name.toLowerCase().includes(value.toLowerCase())))}}">
-            <img src="assets/logo.jpg" alt="iJoint logo" class="logo">
-            <nav class="filters flex mt-5 md:mt-0">
-							<div class="w-40">
-                <div id="categoriesFilter"></div>
-							</div>
-							<label class="search-label flex align-center w-auto ml-2" :class="focusedSearch ? 'shadow-md' : ''">
-								<i class="fas fa-search flex align-center p-2"></i>
-								<input type="text" @input.debounce.250ms="updateItems($event.target.value)" @focus="focusedSearch = true" @blur="focusedSearch = false" class="focus:outline-none " id="searchProducts" placeholder="Buscar">
-							</label>
-            </nav>
-						<div class="cart w-full lg:w-96 mt-5 lg:mt-0"  @add-to-cart.window="$store.cart.currentValue = calculateFullPrice($store.categories.items); $store.cart.items = orderedProducts($store.categories.items)">
-							<table class="text-gray-600 text-sm w-full">
-								<tr>
-									<td class="pr-10">Subtotal</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${$store.cart.currentValue.toFixed(2)} ${CURRENCY_NAME}`"></td>
-								</tr>								
-								<tr>
-									<td>IVA</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * VAT_PERCENT).toFixed(2)} ${CURRENCY_NAME}`"></td>
-								</tr>
-								<tr class="border-t border-gray-300 py-1">
-									<td>Total</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * (1 + VAT_PERCENT)).toFixed(2)} ${CURRENCY_NAME}`"></td>
-								</tr>
-							</table>
-							<div class="flex justify-end">
-								<button role="button" :disabled="$store.cart.items.length == 0" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" :class="$store.cart.items.length ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'" @click="orderedProducts($store.categories.items); $store.cart.opened = true; MicroModal.show('modalCart');">Próximo</button>
-							</div>
+<body class="pt-36 bg-gray-200">
+	<header class="header-wrapper fixed w-full top-0 left-0 bg-white z-100">
+			<div class="header flex-wrap" x-data="{focusedSearch: false, updateItems: (value) =>{ $store.categories.items.forEach(category => category.products.forEach(product => product.hidden = !product.name.toLowerCase().includes(value.toLowerCase())))}}">
+					<img src="assets/logo.jpg" alt="iJoint logo" class="logo">
+					<nav class="filters flex mt-5 md:mt-0">
+						<div class="w-40">
+							<div id="categoriesFilter"></div>
 						</div>
-        </div>
-    </header>
-
-		<section class="addresses w-full flex justify-center px-4 mt-3" x-data="{addresses: [{header: 'Billing Address', prefix: 'billing'}, {header: 'Delivery Address', prefix: 'delivery'}]}">
-			<div class="w-full max-w-screen-md px-5 mx-auto mb-3">
-				<div class="bg-white rounded-md p-3 my-3 shadow-lg">
-					<h3 class="py-3 text-lg border-b-2 border-gray-400 flex items-center mb-3">Detalles de contacto</h3>
-					<form @submit.prevent="saveForm" id="addressForm" x-init="fillForm('#addressForm')">
-						<div class="overflow-hidden sm:rounded-md">
-							<div class="py-5 px-3 md:px-6">
-								<div class="grid grid-cols-6 gap-6">
-									<div class="col-span-6 sm:col-span-3">
-										<label for="first_name" class="block text-sm font-medium text-gray-700">First name</label>
-										<input type="text" name="first_name" id="first_name" required autocomplete="given-name" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-									</div>
-		
-									<div class="col-span-6 sm:col-span-3">
-										<label for="last_name" class="block text-sm font-medium text-gray-700">Last name</label>
-										<input type="text" name="last_name" id="last_name" required autocomplete="family-name" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-									</div>
-		
-									<div class="col-span-6 sm:col-span-3">
-										<label for="email_address" class="block text-sm font-medium text-gray-700">Email address</label>
-										<input type="email" name="email_address" id="email_address" required autocomplete="email" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-									</div>
-
-									<div class="col-span-6 sm:col-span-3">
-										<label for="telephone" class="block text-sm font-medium text-gray-700">Telephone number</label>
-										<input type="tel" name="telephone" id="telephone" required autocomplete="tel" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-									</div>
-
-									<template x-for="address in addresses">
-										<div class="col-span-6">
-											<fieldset class="grid grid-cols-6 gap-6">
-												<legend class="col-span-6 -mb-5 text-gray-900" x-text="address.header"></legend>
-												<!-- <div class="col-span-6 sm:col-span-3">
-													<label :for="`${address.prefix}_country`" class="block text-sm font-medium text-gray-700">Country / Region</label>
-													<select :id="`${address.prefix}_country`" :name="`${address.prefix}_country`" required autocomplete="country" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-														<option>United States</option>
-														<option>Canada</option>
-														<option>Mexico</option>
-													</select>
-												</div> -->
-					
-												<div class="col-span-6">
-													<label :for="`${address.prefix}_street_address`" class="block text-sm font-medium text-gray-700">Street address</label>
-													<input type="text" :id="`${address.prefix}_street_address`" :name="`${address.prefix}_street_address`" required autocomplete="street-address" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-												</div>
-					
-												<div class="col-span-6 sm:col-span-3 lg:col-span-2">
-													<label :for="`${address.prefix}_city`" class="block text-sm font-medium text-gray-700">City</label>
-													<input type="text" :id="`${address.prefix}_city`" :name="`${address.prefix}_city`" required class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-												</div>
-					
-												<div class="col-span-6 sm:col-span-3 lg:col-span-2">
-													<label :for="`${address.prefix}_state`" class="block text-sm font-medium text-gray-700">State / Province</label>
-													<input type="text" :id="`${address.prefix}_state`" :name="`${address.prefix}_state`" required class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-												</div>
-					
-												<div class="col-span-6 sm:col-span-3 lg:col-span-2">
-													<label :for="`${address.prefix}_postal_code`" class="block text-sm font-medium text-gray-700">ZIP / Postal</label>
-													<input type="text" :id="`${address.prefix}_postal_code`" :name="`${address.prefix}_postal_code`" required autocomplete="postal-code" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
-												</div>
-											</fieldset>
-										</div>
-									</template>
-								</div>
-							</div>
-							<div class="py-3 bg-gray-50 text-right">
-								<button type="submit" class="mr-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-									Save
-								</button>
-							</div>
+						<label class="search-label flex align-center w-auto ml-2" :class="focusedSearch ? 'shadow-md' : ''">
+							<i class="fas fa-search flex align-center p-2"></i>
+							<input type="text" @input.debounce.250ms="updateItems($event.target.value)" @focus="focusedSearch = true" @blur="focusedSearch = false" class="focus:outline-none " id="searchProducts" placeholder="Buscar">
+						</label>
+					</nav>
+					<div class="cart w-full lg:w-96 mt-5 lg:mt-0"  @add-to-cart.window="$store.cart.currentValue = calculateFullPrice($store.categories.items); $store.cart.items = orderedProducts($store.categories.items)">
+						<table class="text-gray-600 text-sm w-full">
+							<tr>
+								<td class="pr-10">Subtotal</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${$store.cart.currentValue.toFixed(2)} ${CURRENCY_NAME}`"></td>
+							</tr>								
+							<tr>
+								<td>IVA</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * VAT_PERCENT).toFixed(2)} ${CURRENCY_NAME}`"></td>
+							</tr>
+							<tr class="border-t border-gray-300 py-1">
+								<td>Total</td><td class="text-right" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * (1 + VAT_PERCENT)).toFixed(2)} ${CURRENCY_NAME}`"></td>
+							</tr>
+						</table>
+						<div class="flex justify-end">
+							<button role="button" :disabled="$store.cart.items.length == 0" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" :class="$store.cart.items.length ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400'" @click="orderedProducts($store.categories.items); $store.cart.opened = true;">Próximo</button>
 						</div>
-					</form>
-				</div>
+					</div>
 			</div>
-    </section>
+	</header>
 
-    <section class="products w-full flex justify-center px-4" x-data>
-			<div class="w-full max-w-screen-md px-5 mx-auto mb-3">
-				<template x-for="category in $store.categories.items" :key="category.id">
-					<div class="bg-white rounded-md p-3 my-3 shadow-lg" x-data="{collapsed: true, selected: 0, countSelected: () => category.products.reduce((total, product) => product.selected ? ++total : total, 0)}" @select-product="selected = countSelected()">
-						<div class="flex items-center py-3 justify-between text-lg cursor-pointer" :class="collapsed ? 'border-b-2 border-gray-400' : ''" @click="collapsed = !collapsed">
-							<div class="flex">
-								<h3 x-text="category.name"></h3>
-								<template x-if="!collapsed && selected > 0">
-									<div class="rounded-md bg-green-600 px-2 text-gray-50 ml-4 text-sm flex justify-center items-center">
-										<i class="fas fa-shopping-cart"></i>
-										<span x-text="`x${selected}`" class="ml-2"></span>
+	<template x-data x-if="$store.success">
+		<section class="p-5 text-lg bg-green-500 text-gray-50 flex justify-center items-center">
+			<h3>Enviado exitosamente</h3>
+			<button @click="$store.success = false" class="px-3 hover:text-gray-200"><i class="fas fa-times"></i></button>
+		</section>
+	</template>
+
+	<section class="addresses w-full flex justify-center px-4 mt-36 md:mt-24 lg:mt-3" x-data="{addresses: [{header: 'Billing Address', prefix: 'billing'}, {header: 'Delivery Address', prefix: 'delivery'}]}">
+		<div class="w-full max-w-screen-md px-5 mx-auto mb-3">
+			<div class="bg-white rounded-md p-3 my-3 shadow-lg">
+				<h3 class="py-3 text-lg border-b-2 border-gray-400 flex items-center mb-3">Detalles de contacto</h3>
+				<form @submit.prevent="saveForm" id="addressForm" x-init="fillForm('#addressForm')" method="post">
+					<div class="overflow-hidden sm:rounded-md">
+						<div class="py-5 px-3 md:px-6">
+							<div class="grid grid-cols-6 gap-6">
+								<div class="col-span-6 sm:col-span-3">
+									<label for="first_name" class="block text-sm font-medium text-gray-700">First name</label>
+									<input type="text" name="first_name" id="first_name" required autocomplete="given-name" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+								</div>
+	
+								<div class="col-span-6 sm:col-span-3">
+									<label for="last_name" class="block text-sm font-medium text-gray-700">Last name</label>
+									<input type="text" name="last_name" id="last_name" required autocomplete="family-name" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+								</div>
+	
+								<div class="col-span-6 sm:col-span-3">
+									<label for="email_address" class="block text-sm font-medium text-gray-700">Email address</label>
+									<input type="email" name="email_address" id="email_address" required autocomplete="email" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+								</div>
+
+								<div class="col-span-6 sm:col-span-3">
+									<label for="telephone" class="block text-sm font-medium text-gray-700">Telephone number</label>
+									<input type="tel" name="telephone" id="telephone" required autocomplete="tel" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+								</div>
+
+								<template x-for="address in addresses">
+									<div class="col-span-6">
+										<fieldset class="grid grid-cols-6 gap-6">
+											<legend class="col-span-6 -mb-5 text-gray-900" x-text="address.header"></legend>
+											<!-- <div class="col-span-6 sm:col-span-3">
+												<label :for="`${address.prefix}_country`" class="block text-sm font-medium text-gray-700">Country / Region</label>
+												<select :id="`${address.prefix}_country`" :name="`${address.prefix}_country`" required autocomplete="country" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+													<option>United States</option>
+													<option>Canada</option>
+													<option>Mexico</option>
+												</select>
+											</div> -->
+				
+											<div class="col-span-6">
+												<label :for="`${address.prefix}_street_address`" class="block text-sm font-medium text-gray-700">Street address</label>
+												<input type="text" :id="`${address.prefix}_street_address`" :name="`${address.prefix}_street_address`" required autocomplete="street-address" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+											</div>
+				
+											<div class="col-span-6 sm:col-span-3 lg:col-span-2">
+												<label :for="`${address.prefix}_city`" class="block text-sm font-medium text-gray-700">City</label>
+												<input type="text" :id="`${address.prefix}_city`" :name="`${address.prefix}_city`" required class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+											</div>
+				
+											<div class="col-span-6 sm:col-span-3 lg:col-span-2">
+												<label :for="`${address.prefix}_state`" class="block text-sm font-medium text-gray-700">State / Province</label>
+												<input type="text" :id="`${address.prefix}_state`" :name="`${address.prefix}_state`" required class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+											</div>
+				
+											<div class="col-span-6 sm:col-span-3 lg:col-span-2">
+												<label :for="`${address.prefix}_postal_code`" class="block text-sm font-medium text-gray-700">ZIP / Postal</label>
+												<input type="text" :id="`${address.prefix}_postal_code`" :name="`${address.prefix}_postal_code`" required autocomplete="postal-code" class="mt-1 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-b border-gray-300">
+											</div>
+										</fieldset>
 									</div>
 								</template>
 							</div>
-							<div class="text-gray-700">
-								<i class="fas" :class="collapsed ? 'fa-angle-up' : 'fa-angle-down'"></i>
-							</div>
 						</div>
-						<div class="products p-2" x-show="collapsed">
-							<template x-for="product in category.products" :key="product.name">
-								<template x-if="!product.hidden">
-									<div x-data="{ hasGrammarges: !!product.grammarges?.length}">
-											<label class="product-label inline-flex items-center p-1 cursor-pointer">
-													<input type="checkbox" x-model="product.selected" @change="$dispatch('select-product'); $dispatch('add-to-cart')" class="mr-4">
-													<p x-text="product.name"></p>
-											</label>
-											<template x-if="hasGrammarges">
-												<div x-show="product.selected" class="text-sm mb-10"  x-data="{calculatePrice: () => product.selected ? product.grammarges.reduce((total, grammarge) => total += grammarge.price * grammarge.count, 0) : 0, total: 0}" x-init="total = calculatePrice()">
-													<table>
-															<thead>
-																	<tr>
-																			<th class="text-gray-700">Gramaje</th>
-																			<th class="text-gray-700">Cantidad</th>
-																			<th class="text-gray-700">Price</th>
-																	</tr>
-															</thead>
-															<tbody>
-																	<template x-for="grammarge in product.grammarges" :key="grammarge.grammarge">
-																			<tr x-init="$watch('grammarge.count', value => {total = calculatePrice()})">
-																					<td x-text="`${grammarge.grammarge} ${grammarge.unit}`"></td>
-																					<td class="px-3">
-																							<input type="number" x-model="grammarge.count" @input="$dispatch('add-to-cart')" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
-																					</td>
-																					<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${grammarge.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
-																			</tr>
-																	</template>
-															</tbody>
-													</table>
-													<div class="text-gray-800 mt-3">
-														Item subtotal: <span x-text="`${CURRENCY_CHAR} ${total.toFixed(2)} ${CURRENCY_NAME}`"></span>
-													</div>
-												</div>
-											</template>
-											<template x-if="!hasGrammarges">
-												<div x-show="product.selected" class="text-sm mb-10">
-													<table>
+						<div class="py-3 bg-gray-50 text-right">
+							<button type="submit" class="mr-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+								Save
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+
+	<section class="products w-full flex justify-center px-4" x-data>
+		<div class="w-full max-w-screen-md px-5 mx-auto mb-3">
+			<template x-for="category in $store.categories.items" :key="category.id">
+				<div class="bg-white rounded-md p-3 my-3 shadow-lg" x-data="{collapsed: true, selected: 0, countSelected: () => category.products.reduce((total, product) => product.selected ? ++total : total, 0)}" @select-product="selected = countSelected()">
+					<div class="flex items-center py-3 justify-between text-lg cursor-pointer" :class="collapsed ? 'border-b-2 border-gray-400' : ''" @click="collapsed = !collapsed">
+						<div class="flex">
+							<h3 x-text="category.name"></h3>
+							<template x-if="!collapsed && selected > 0">
+								<div class="rounded-md bg-green-600 px-2 text-gray-50 ml-4 text-sm flex justify-center items-center">
+									<i class="fas fa-shopping-cart"></i>
+									<span x-text="`x${selected}`" class="ml-2"></span>
+								</div>
+							</template>
+						</div>
+						<div class="text-gray-700">
+							<i class="fas" :class="collapsed ? 'fa-angle-up' : 'fa-angle-down'"></i>
+						</div>
+					</div>
+					<div class="products p-2" x-show="collapsed">
+						<template x-for="product in category.products" :key="product.name">
+							<template x-if="!product.hidden">
+								<div x-data="{ hasGrammarges: !!product.grammarges?.length}">
+										<label class="product-label inline-flex items-center p-1 cursor-pointer">
+												<input type="checkbox" x-model="product.selected" @change="$dispatch('select-product'); $dispatch('add-to-cart')" class="mr-4">
+												<p x-text="product.name"></p>
+										</label>
+										<template x-if="hasGrammarges">
+											<div x-show="product.selected" class="text-sm mb-10"  x-data="{calculatePrice: () => product.selected ? product.grammarges.reduce((total, grammarge) => total += grammarge.price * grammarge.count, 0) : 0, total: 0}" x-init="total = calculatePrice()">
+												<table>
 														<thead>
 																<tr>
+																		<th class="text-gray-700">Gramaje</th>
 																		<th class="text-gray-700">Cantidad</th>
 																		<th class="text-gray-700">Price</th>
 																</tr>
 														</thead>
 														<tbody>
-																<tr>
-																	<td class="px-3">
-																		<input type="number" x-model="product.count" @input="$dispatch('add-to-cart')" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
-																	</td>
-																	<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${product.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
-																</tr>
+																<template x-for="grammarge in product.grammarges" :key="grammarge.grammarge">
+																		<tr x-init="$watch('grammarge.count', value => {total = calculatePrice()})">
+																				<td x-text="`${grammarge.grammarge} ${grammarge.unit}`"></td>
+																				<td class="px-3">
+																						<input type="number" x-model="grammarge.count" @input="$dispatch('add-to-cart')" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
+																				</td>
+																				<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${grammarge.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
+																		</tr>
+																</template>
 														</tbody>
-													</table>
-													<div class="text-gray-800 mt-3">
-														Item subtotal: <span x-text="`${CURRENCY_CHAR} ${(product.count * product.price).toFixed(2)} ${CURRENCY_NAME}`"></span>
-													</div>
+												</table>
+												<div class="text-gray-800 mt-3">
+													Item subtotal: <span x-text="`${CURRENCY_CHAR} ${total.toFixed(2)} ${CURRENCY_NAME}`"></span>
 												</div>
-											</template>
-									</div>
-								</template>
+											</div>
+										</template>
+										<template x-if="!hasGrammarges">
+											<div x-show="product.selected" class="text-sm mb-10">
+												<table>
+													<thead>
+															<tr>
+																	<th class="text-gray-700">Cantidad</th>
+																	<th class="text-gray-700">Price</th>
+															</tr>
+													</thead>
+													<tbody>
+															<tr>
+																<td class="px-3">
+																	<input type="number" x-model="product.count" @input="$dispatch('add-to-cart')" class="w-14 focus:outline-none hover:bg-gray-300 focus:bg-gray-200 p-1" min="0">
+																</td>
+																<td class="text-gray-600" x-text="`${CURRENCY_CHAR} ${product.price.toFixed(2)} ${CURRENCY_NAME}`"></td>
+															</tr>
+													</tbody>
+												</table>
+												<div class="text-gray-800 mt-3">
+													Item subtotal: <span x-text="`${CURRENCY_CHAR} ${(product.count * product.price).toFixed(2)} ${CURRENCY_NAME}`"></span>
+												</div>
+											</div>
+										</template>
+								</div>
 							</template>
-						</div>
-					</div>
-				</template>
-			</div>
-    </section>
-
-		<div x-data>
-			<template x-if="$store.cart.opened">
-				<div class="cart-modal__wrapper absolute top-0 left-0 bg-gray-800 bg-opacity-75 w-screen h-screen flex justify-center items-center overflow-y-auto" @click.self="$store.cart.opened = false">
-					<div class="cart-modal p-4 bg-gray-100 rounded-md shadow-lg mx-8 mt-8 max-w-2xl">
-						<div class="cart-modal__header pb-3 text-gray-800 text-lg">Resumen</div>
-						<div class="cart-modal__body">
-							<table class="text-sm text-gray-700 w-full">
-								<thead>
-									<tr>
-										<th class="text-left px-3">Producto</th><th class="text-left px-3">Cantidad</th><th class="text-left px-3">Total price</th>
-									</tr>
-								</thead>
-								<template x-for="product in $store.cart.items">
-									<tbody>
-										<template x-if="'grammarges' in product">
-											<template x-for="grammarge in product.grammarges">
-												<tr>
-													<td class="px-3 py-2"><span x-text="`${product.name} ${grammarge.grammarge}${grammarge.unit}`"></span></td>
-													<td class="px-3 py-2"><span x-text="`${grammarge.count}`"></td>
-													<td class="px-3 py-2"><span x-text="`${CURRENCY_CHAR} ${(grammarge.count * grammarge.price).toFixed(2)} ${CURRENCY_NAME}`"></td>
-												</tr>													
-											</template>
-										</template>
-										<template x-if="!('grammarges' in product)">
-											<tr>
-												<td class="px-3 py-2"><span x-text="product.name"></span></td>
-												<td class="px-3 py-2"><span x-text="`${product.count}`"></span></td>
-												<td class="px-3 py-2"><span x-text="`${CURRENCY_CHAR} ${(product.count * product.price).toFixed(2)} ${CURRENCY_NAME}`"></td>
-											</tr>
-										</template>
-									</tbody>
-								</template>
-								<tfoot>
-									<tr>
-										<td class="px-3 pt-6 font-bold" colspan="2">Subtotal</td>
-										<td class="px-3 pt-6" x-text="`${CURRENCY_CHAR} ${$store.cart.currentValue.toFixed(2)} ${CURRENCY_NAME}`"></td>
-									</tr>
-									<tr>
-										<td class="px-3 font-bold" colspan="2">IVA</td>
-										<td class="px-3 " x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * VAT_PERCENT).toFixed(2)} ${CURRENCY_NAME}`"></td>
-									</tr>
-									<tr class="border-t border-gray-300">
-										<td class="px-3 pt-2 font-bold" colspan="2">Total</td>
-										<td class="px-3 pt-2" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * (1 + VAT_PERCENT)).toFixed(2)} ${CURRENCY_NAME}`"></td>
-									</tr>
-								</tfoot>
-							</table>
-							<label class="block px-3 py-3">
-								<p class="text-gray-800 text-sm font-bold">Si desea comentarnos:</p>
-								<textarea class="resize-y w-full bg-300 focus:outline-none rounded-md shadow-md p-1" style="min-height: 50px"></textarea>
-							</label>
-						</div>
-						<div class="cart-modal__footer pt-3">
-							<div class="p-2 flex justify-end">
-								<button role="button" @click="$store.cart.opened = false" class=" mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Cancelar</button>
-								<button role="button" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Enviar</button>
-							</div>
-							<div class="my-5">
-								<h2 class="text-xl text-gray-900">Nota</h2>
-								<p class="text-sm text-gray-700">
-									En cuanto recibamos la orden de pedido, le enviaremos factura proforma para su pago mediante transferencia bancaria a: Grupo Ijoint 2018 SL y le indicaremos fecha prevista de entrega de los articulos seleccionados.
-								</p>
-							</div>
-							<div>
-								<p class="text-xs text-gray-500">PROTECCIÓN DE DATOS De conformidad con lo establecido en el Art. 5 de la Ley Orgánica 15/1999 de diciembre de Protección de Datos de Carácter Personal, por el que se regula el derecho de información en la recogida de datos le informamos de los siguientes extremos: - Los datos de carácter personal que nos ha suministrado en esta y otras comunicaciones mantenidas con usted serán objeto de tratamiento en los ficheros responsabilidad de GRUPO IJOINT 2018 SL - La finalidad del tratamiento es la de gestionar de forma adecuada la prestación del servicio que nos ha requerido. Asimismo estos datos no serán cedidos a terceros, salvo las cesiones legalmente permitidas. - Los datos solicitados a través de esta y otras comunicaciones son de suministro obligatorio para la prestación del servicio. Estos son adecuados, pertinentes y no excesivos. - Su negativa a suministrar los datos solicitados implica la imposibilidad prestarle el servicio. - Asimismo, le informamos de la posibilidad de ejercitar los correspondiente derechos de acceso, rectificación, cancelación y oposición de conformidad con lo establecido en la Ley 15/1999 ante GRUPO IJOINT2018 SL como responsables del fichero. Los derechos mencionados los puede ejercitar a través de los siguientes medios:
-									marketing@ijointcbd.com. GRUPO IJOINT 2018 SL , CIF: B93607174 C/ OLLERIAS 18-29012 MALAGA</p>
-							</div>
-						</div>
+						</template>
 					</div>
 				</div>
 			</template>
 		</div>
+	</section>
 
+	<template x-if="$store.cart.opened" x-data x-cloak>
+		<div x-data>
+			<div x-show="$store.cart.opened" class="cart-modal__wrapper fixed top-0 left-0 bg-gray-800 bg-opacity-75 w-screen h-screen overflow-y-auto pb-4" @click.self="$store.cart.opened = false">
+				<!-- <div x-init="$watch('$store.cart.opened', toggleOverflowHidden)" x-show="$store.cart.opened" class="cart-modal__wrapper fixed top-0 left-0 bg-gray-800 bg-opacity-75 w-screen h-screen overflow-y-auto pb-4" @click.self="$store.cart.opened = false"> -->
+				<div class="cart-modal absolute inset-x-0 p-4 bg-gray-100 rounded-md shadow-lg mx-4 md:mx-auto mt-8 max-w-2xl" x-cloak>
+					<div class="cart-modal__header pb-3 text-gray-800 text-lg">Resumen</div>
+					<div class="cart-modal__body">
+						<table class="text-sm text-gray-700 w-full">
+							<thead>
+								<tr>
+									<th class="text-left px-3">Producto</th><th class="text-left px-3">Cantidad</th><th class="text-left px-3">Total price</th>
+								</tr>
+							</thead>
+							<template x-for="product in $store.cart.items">
+								<tbody>
+									<template x-if="'grammarges' in product">
+										<template x-for="grammarge in product.grammarges">
+											<tr>
+												<td class="px-3 py-2"><span x-text="`${product.name} ${grammarge.grammarge}${grammarge.unit}`"></span></td>
+												<td class="px-3 py-2"><span x-text="`${grammarge.count}`"></td>
+												<td class="px-3 py-2"><span x-text="`${CURRENCY_CHAR} ${(grammarge.count * grammarge.price).toFixed(2)} ${CURRENCY_NAME}`"></td>
+											</tr>													
+										</template>
+									</template>
+									<template x-if="!('grammarges' in product)">
+										<tr>
+											<td class="px-3 py-2"><span x-text="product.name"></span></td>
+											<td class="px-3 py-2"><span x-text="`${product.count}`"></span></td>
+											<td class="px-3 py-2"><span x-text="`${CURRENCY_CHAR} ${(product.count * product.price).toFixed(2)} ${CURRENCY_NAME}`"></td>
+										</tr>
+									</template>
+								</tbody>
+							</template>
+							<tfoot>
+								<tr>
+									<td class="px-3 pt-6 font-bold" colspan="2">Subtotal</td>
+									<td class="px-3 pt-6" x-text="`${CURRENCY_CHAR} ${$store.cart.currentValue.toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>
+								<tr>
+									<td class="px-3 font-bold" colspan="2">IVA</td>
+									<td class="px-3 " x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * VAT_PERCENT).toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>
+								<tr class="border-t border-gray-300">
+									<td class="px-3 pt-2 font-bold" colspan="2">Total</td>
+									<td class="px-3 pt-2" x-text="`${CURRENCY_CHAR} ${($store.cart.currentValue * (1 + VAT_PERCENT)).toFixed(2)} ${CURRENCY_NAME}`"></td>
+								</tr>
+							</tfoot>
+						</table>
+						<label class="block px-3 py-3">
+							<p class="text-gray-800 text-sm font-bold">Si desea comentarnos:</p>
+							<textarea x-model="$store.cart.comment" class="resize-y w-full bg-300 focus:outline-none rounded-md shadow-md p-1" style="min-height: 50px"></textarea>
+						</label>
+					</div>
+					<div class="cart-modal__footer pt-3">
+						<div class="my-3">
+							<h2 class="text-xl text-gray-900">Nota</h2>
+							<p class="text-sm text-gray-700">
+								En cuanto recibamos la orden de pedido, le enviaremos factura proforma para su pago mediante transferencia bancaria a: Grupo Ijoint 2018 SL y le indicaremos fecha prevista de entrega de los articulos seleccionados.
+							</p>
+						</div>
+						<div class="p-3 flex justify-end">
+							<button role="button" @click="$store.cart.opened = false" class=" mr-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Cancelar</button>
+							<button role="button" @click="sendEmail()" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Enviar</button>
+						</div>
+						<template x-if="$store.errors">
+							<ol class="errors text-red-600 list-decimal ml-6 mb-2">
+								<template x-for="error in $store.errors.errors">
+									<li x-text="error"></li>
+								</template>
+							</ol>	
+						</template>
+						<div>
+							<p class="text-xs text-gray-500">PROTECCIÓN DE DATOS De conformidad con lo establecido en el Art. 5 de la Ley Orgánica 15/1999 de diciembre de Protección de Datos de Carácter Personal, por el que se regula el derecho de información en la recogida de datos le informamos de los siguientes extremos: - Los datos de carácter personal que nos ha suministrado en esta y otras comunicaciones mantenidas con usted serán objeto de tratamiento en los ficheros responsabilidad de GRUPO IJOINT 2018 SL - La finalidad del tratamiento es la de gestionar de forma adecuada la prestación del servicio que nos ha requerido. Asimismo estos datos no serán cedidos a terceros, salvo las cesiones legalmente permitidas. - Los datos solicitados a través de esta y otras comunicaciones son de suministro obligatorio para la prestación del servicio. Estos son adecuados, pertinentes y no excesivos. - Su negativa a suministrar los datos solicitados implica la imposibilidad prestarle el servicio. - Asimismo, le informamos de la posibilidad de ejercitar los correspondiente derechos de acceso, rectificación, cancelación y oposición de conformidad con lo establecido en la Ley 15/1999 ante GRUPO IJOINT2018 SL como responsables del fichero. Los derechos mencionados los puede ejercitar a través de los siguientes medios:
+								marketing@ijointcbd.com. GRUPO IJOINT 2018 SL , CIF: B93607174 C/ OLLERIAS 18-29012 MALAGA</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</template>
 		
 <script defer src="https://unpkg.com/alpinejs@3.2.2/dist/cdn.min.js"></script>
+<script src="js/bodyScrollLock.js"></script>
 <script src="js/virtual-select.min.js"></script>
 <script src="js/cookies.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -290,6 +305,11 @@
 	const VAT_PERCENT = 0.21
 
 	const options = Window.categories.map(category => ({label: category.name, value: category.id}))
+
+	function toggleOverflowHidden(){
+		document.querySelector('BODY').classList.toggle('overflow-y-hidden');
+	}
+
 
 	VirtualSelect.init({
 		ele: '#categoriesFilter',
@@ -302,7 +322,7 @@
 		disableSelectAll: true,
 		hideClearButton: true
 	})
-
+	
 	document.addEventListener('alpine:init', function(){
 		Window.categories.forEach(category => 
 			category.products.forEach(product => {
@@ -316,7 +336,8 @@
 		)
 
 		Alpine.store('categories', { items: Window.categories })
-		Alpine.store('cart', { currentValue: 0, items: [], opened: false })
+		Alpine.store('cart', { currentValue: 0, items: [], opened: false, comment: '' })
+		Alpine.store('success', false)
 		
 
 
@@ -384,7 +405,50 @@
 		if(product.count > 0 || product.grammarges?.length) return true
 
 		return false
-		
+	}
+
+	function sendEmail(e){
+		// e.target.setAttribute('disabled', true);
+
+		const formData = new FormData(document.querySelector('#addressForm'))
+		formData.append('products', JSON.stringify(Alpine.store('cart').items))
+		formData.append('comment', Alpine.store('cart').comment)
+		formData.append('total_price', Alpine.store('cart').currentValue)
+
+		const plainFormData = Object.fromEntries(formData.entries());
+		const formDataJsonString = JSON.stringify(plainFormData);
+
+		fetch('sendMail.php', {
+			method: 'POST',
+			body: new URLSearchParams(formData),
+			headers: {
+				'Content-type': 'application/x-www-form-urlencoded',
+				'Access-Control-Allow-Origin': '*'
+			},
+		}).then(async res => {
+			try {
+				const data = await res.json()
+				console.log(data)
+				if(data.success) {
+					Alpine.store('success', true)
+					Alpine.store('cart', { currentValue: 0, items: [], opened: false, comment: ''})
+					Alpine.store('categories').items.forEach(category => category.products.forEach(product => { 
+						product.selected = false
+						if("grammarges" in product) product.grammarges.forEach(grammarge => grammarge.count = 0)
+						else product.count = 0
+					}))
+
+					window.scrollTo(0, 0)
+				} else {
+					Alpine.store('errors', { errors: data.errors})
+				}
+			} catch(error) {
+				console.log('Error happened here!')
+				console.error(error)
+			}
+
+			// e.target.setAttribute('disabled', false);
+		})
 	}
 </script>
 </body>
